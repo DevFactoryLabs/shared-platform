@@ -100,12 +100,3 @@ indent_size = 2
 
 [*.md]
 trim_trailing_whitespace = false
-
-# Test projects: relax rules that conflict with common test conventions
-[libs/**/*.Tests/**/*.cs]
-# xUnit test method naming uses underscores: MethodName_Scenario_Expected
-dotnet_diagnostic.CA1707.severity = none
-# Test helper types don't need to be sealed
-dotnet_diagnostic.CA1852.severity = none
-# Test classes may use public fields for test data
-dotnet_diagnostic.CA1051.severity = none

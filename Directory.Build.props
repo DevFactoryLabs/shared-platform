@@ -11,16 +11,4 @@
   <PropertyGroup Condition="'$(IsTestProject)' != 'true'">
     <Version Condition="'$(Version)' == ''">0.0.0</Version>
   </PropertyGroup>
-
-  <!-- Analyzers only for non-test projects (detected by project name convention) -->
-  <ItemGroup Condition="!$(MSBuildProjectName.EndsWith('.Tests'))">
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.*">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Roslynator.Analyzers" Version="4.*">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
 </Project>
