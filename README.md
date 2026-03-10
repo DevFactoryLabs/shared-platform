@@ -51,3 +51,30 @@ git push origin v1.2.3
 ```
 
 This triggers the release workflow, which builds, tests, and publishes all packages to GitHub Packages automatically.
+
+## GitHub Packages Setup
+
+To publish NuGet packages to GitHub Packages with the existing release workflow, make sure the repository is hosted under the `devfactorylabs` owner and GitHub Actions is allowed to publish packages for this repository.
+
+The workflow expects:
+
+- a tag in the format `vX.Y.Z`
+- `GITHUB_TOKEN` with `packages: write` permission
+- `nuget.config` committed with the `github` source
+
+After the first successful release, packages will be available at:
+
+```text
+https://github.com/orgs/devfactorylabs/packages?repo_name=shared-platform
+```
+
+To consume the packages locally, authenticate a NuGet source with a GitHub Personal Access Token that has at least `read:packages`:
+
+```bash
+dotnet nuget update source github \
+  --source "https://nuget.pkg.github.com/devfactorylabs/index.json" \
+  --username YOUR_GITHUB_USERNAME \
+  --password YOUR_GITHUB_PAT \
+  --store-password-in-clear-text
+```
+
