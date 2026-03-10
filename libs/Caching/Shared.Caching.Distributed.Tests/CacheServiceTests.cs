@@ -20,7 +20,9 @@ public class CacheServiceTests
     {
         // Arrange
         var key = "test-key";
-        _distributedCache.GetAsync(key, Arg.Any<CancellationToken>()).Returns(Task.FromResult<byte[]?>(null));
+        _distributedCache
+            .GetAsync(key, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<byte[]?>(null));
 
         // Act
         var result = await _cacheService.GetAsync<string>(key);
@@ -36,7 +38,9 @@ public class CacheServiceTests
         var key = "test-key";
         var testObject = "test-value";
         var serializedData = JsonSerializer.SerializeToUtf8Bytes(testObject);
-        _distributedCache.GetAsync(key, Arg.Any<CancellationToken>()).Returns(Task.FromResult<byte[]?>(serializedData));
+        _distributedCache
+            .GetAsync(key, Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<byte[]?>(serializedData));
 
         // Act
         var result = await _cacheService.GetAsync<string>(key);
@@ -56,11 +60,16 @@ public class CacheServiceTests
         await _cacheService.SetAsync(key, value);
 
         // Assert
-        await _distributedCache.Received(1).SetAsync(
-            key,
-            Arg.Any<byte[]>(),
-            Arg.Is<DistributedCacheEntryOptions>(opts => opts.AbsoluteExpirationRelativeToNow == TimeSpan.FromMinutes(2)),
-            Arg.Any<CancellationToken>());
+        await _distributedCache
+            .Received(1)
+            .SetAsync(
+                key,
+                Arg.Any<byte[]>(),
+                Arg.Is<DistributedCacheEntryOptions>(opts =>
+                    opts.AbsoluteExpirationRelativeToNow == TimeSpan.FromMinutes(2)
+                ),
+                Arg.Any<CancellationToken>()
+            );
     }
 
     [Fact]
@@ -75,11 +84,16 @@ public class CacheServiceTests
         await _cacheService.SetAsync(key, value, expiration);
 
         // Assert
-        await _distributedCache.Received(1).SetAsync(
-            key,
-            Arg.Any<byte[]>(),
-            Arg.Is<DistributedCacheEntryOptions>(opts => opts.AbsoluteExpirationRelativeToNow == expiration),
-            Arg.Any<CancellationToken>());
+        await _distributedCache
+            .Received(1)
+            .SetAsync(
+                key,
+                Arg.Any<byte[]>(),
+                Arg.Is<DistributedCacheEntryOptions>(opts =>
+                    opts.AbsoluteExpirationRelativeToNow == expiration
+                ),
+                Arg.Any<CancellationToken>()
+            );
     }
 
     [Fact]
@@ -106,10 +120,13 @@ public class CacheServiceTests
         await _cacheService.SetAsync(key, value);
 
         // Assert
-        await _distributedCache.Received(1).SetAsync(
-            key,
-            Arg.Any<byte[]>(),
-            Arg.Any<DistributedCacheEntryOptions>(),
-            Arg.Any<CancellationToken>());
+        await _distributedCache
+            .Received(1)
+            .SetAsync(
+                key,
+                Arg.Any<byte[]>(),
+                Arg.Any<DistributedCacheEntryOptions>(),
+                Arg.Any<CancellationToken>()
+            );
     }
 }

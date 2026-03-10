@@ -17,11 +17,10 @@ public static class CorrelationExtensions
         var correlationId = correlationContext.GetCorrelationId();
 
         if (correlationId == null)
-            throw new InvalidOperationException("Correlation id is empty");
-
-        return new Dictionary<string, string>
         {
-            ["correlation_id"] = correlationId
-        };
+            throw new InvalidOperationException("Correlation id is empty");
+        }
+
+        return new Dictionary<string, string> { ["correlation_id"] = correlationId };
     }
 }

@@ -8,7 +8,10 @@ public class OutboxPublisher<TContext>(TContext context) : IOutboxPublisher
     where TContext : IOutboxDbContext
 {
     public async Task Publish<TEvent>(
-        TEvent integrationEvent, string destination, IDictionary<string, string>? headers = null)
+        TEvent integrationEvent,
+        string destination,
+        IDictionary<string, string>? headers = null
+    )
         where TEvent : IIntegrationEvent
     {
         var outboxMessage = OutboxMessage.Create(
@@ -16,7 +19,8 @@ public class OutboxPublisher<TContext>(TContext context) : IOutboxPublisher
             integrationEvent.Id,
             integrationEvent,
             integrationEvent.OccurredOn,
-            headers);
+            headers
+        );
 
         await context.OutboxMessages.AddAsync(outboxMessage);
     }

@@ -49,8 +49,14 @@ public class CommandValidatorTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.Equal(2, result.Errors.Length);
-        Assert.Contains(result.Errors, e => e.Code == "Name" && e.Description == "Name is required");
-        Assert.Contains(result.Errors, e => e.Code == "Age" && e.Description == "Age must be greater than 0");
+        Assert.Contains(
+            result.Errors,
+            e => e.Code == "Name" && e.Description == "Name is required"
+        );
+        Assert.Contains(
+            result.Errors,
+            e => e.Code == "Age" && e.Description == "Age must be greater than 0"
+        );
     }
 
     [Fact]
@@ -97,8 +103,10 @@ public class CommandValidatorTests
         // Assert
         Assert.False(result.IsSuccess);
         Assert.True(result.Errors.Length >= 2);
-        Assert.All(result.Errors.Where(e => e.Code == "Name"), error =>
-            Assert.Contains(error.Description, collection));
+        Assert.All(
+            result.Errors.Where(e => e.Code == "Name"),
+            error => Assert.Contains(error.Description, collection)
+        );
     }
 
     [Fact]
@@ -120,8 +128,10 @@ public class CommandValidatorTests
         public TestCommandWithMultipleRulesValidator()
         {
             RuleFor(x => x.Name)
-                .NotEmpty().WithMessage("Name is required")
-                .MinimumLength(2).WithMessage("Name must be at least 2 characters");
+                .NotEmpty()
+                .WithMessage("Name is required")
+                .MinimumLength(2)
+                .WithMessage("Name must be at least 2 characters");
             RuleFor(x => x.Age).GreaterThan(0).WithMessage("Age must be greater than 0");
         }
     }

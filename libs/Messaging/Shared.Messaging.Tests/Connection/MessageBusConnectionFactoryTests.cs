@@ -16,7 +16,9 @@ public class MessageBusConnectionFactoryTests
         var factory = new MessageBusConnectionFactory(configuration);
 
         // Act & Assert
-        var exception = await Record.ExceptionAsync(async () => await factory.CreateConnectionAsync());
+        var exception = await Record.ExceptionAsync(
+            async () => await factory.CreateConnectionAsync()
+        );
 
         // Assert that configuration was called at least once
         configuration.Received().GetConnectionString("RabbitMQ");
@@ -37,7 +39,9 @@ public class MessageBusConnectionFactoryTests
         var factory = new MessageBusConnectionFactory(configuration);
 
         // Act & Assert
-        var exception = await Record.ExceptionAsync(async () => await factory.CreateConnectionAsync(cancellationToken));
+        var exception = await Record.ExceptionAsync(
+            async () => await factory.CreateConnectionAsync(cancellationToken)
+        );
 
         // Assert that configuration was called at least once
         configuration.Received().GetConnectionString("RabbitMQ");

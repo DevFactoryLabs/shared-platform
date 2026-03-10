@@ -24,11 +24,12 @@ public class CorrelationContext : ICorrelationContext
     public void SetCorrelationId(string correlationId)
     {
         if (string.IsNullOrWhiteSpace(correlationId))
+        {
             throw new ArgumentNullException(nameof(correlationId));
+        }
 
         _correlationId.Value = correlationId;
 
         Activity.Current?.SetTag("correlation_id", correlationId);
     }
 }
-

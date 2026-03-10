@@ -10,15 +10,16 @@ public class InboxStorage(InboxSettings settings) : IInboxStorage
     private NpgsqlConnection? _connection;
     private NpgsqlTransaction? _transaction;
 
-    public async Task<IReadOnlyList<InboxMessage>> GetUnprocessedMessagesAsync(CancellationToken cancellationToken)
+    public async Task<IReadOnlyList<InboxMessage>> GetUnprocessedMessagesAsync(
+        CancellationToken cancellationToken
+    )
     {
         _connection = new NpgsqlConnection(settings.ConnectionString);
         await _connection.OpenAsync(cancellationToken);
 
         _transaction = await _connection.BeginTransactionAsync(cancellationToken);
 
-        const string sql =
-            """
+        const string sql = """
             SELECT * 
             FROM "InboxMessages"
             WHERE "ProcessedOn" IS NULL 
@@ -30,7 +31,8 @@ public class InboxStorage(InboxSettings settings) : IInboxStorage
         var messages = await _connection.QueryAsync<InboxMessage>(
             sql,
             new { settings.MessagesBatchSize },
-            _transaction);
+            _transaction
+        );
 
         return messages.AsList();
     }
@@ -41,14 +43,17 @@ public class InboxStorage(InboxSettings settings) : IInboxStorage
         await connection.OpenAsync(cancellationToken);
 
         const string sql = """
-        INSERT INTO "InboxMessages" ("Id", "OccurredOn", "Type", "Content", "Headers")
-        VALUES (@Id, @OccurredOn, @Type, @Content::json, @Headers::json)
-        """;
+            INSERT INTO "InboxMessages" ("Id", "OccurredOn", "Type", "Content", "Headers")
+            VALUES (@Id, @OccurredOn, @Type, @Content::json, @Headers::json)
+            """;
 
         await connection.ExecuteAsync(sql, message);
     }
 
-    public async Task<bool> IsAlreadyProcessedAsync(Guid integrationEventId, CancellationToken cancellationToken)
+    public async Task<bool> IsAlreadyProcessedAsync(
+        Guid integrationEventId,
+        CancellationToken cancellationToken
+    )
     {
         await using var connection = new NpgsqlConnection(settings.ConnectionString);
         await connection.OpenAsync(cancellationToken);
@@ -60,8 +65,7 @@ public class InboxStorage(InboxSettings settings) : IInboxStorage
 
     public async Task UpdateMessageAsync(InboxMessage message, CancellationToken cancellationToken)
     {
-        const string sql =
-            """
+        const string sql = """
             UPDATE "InboxMessages" 
             SET "ProcessedOn" = @ProcessedOn, 
                 "Error" = @Error, 
@@ -69,13 +73,17 @@ public class InboxStorage(InboxSettings settings) : IInboxStorage
             WHERE "Id" = @Id;
             """;
 
-        await _connection!.ExecuteAsync(sql, new
-        {
-            message.ProcessedOn,
-            message.Error,
-            message.ErrorHandledOn,
-            message.Id
-        }, _transaction);
+        await _connection!.ExecuteAsync(
+            sql,
+            new
+            {
+                message.ProcessedOn,
+                message.Error,
+                message.ErrorHandledOn,
+                message.Id,
+            },
+            _transaction
+        );
     }
 
     public async Task CommitAsync(CancellationToken cancellationToken)

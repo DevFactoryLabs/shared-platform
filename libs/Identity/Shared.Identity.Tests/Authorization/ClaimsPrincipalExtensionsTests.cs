@@ -10,10 +10,7 @@ public class ClaimsPrincipalExtensionsTests
     {
         // Arrange
         var userId = Guid.NewGuid();
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, userId.ToString())
-        };
+        var claims = new[] { new Claim(ClaimTypes.NameIdentifier, userId.ToString()) };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
 
@@ -28,10 +25,7 @@ public class ClaimsPrincipalExtensionsTests
     public void GetUserId_WithInvalidUserId_ThrowsInvalidOperationException()
     {
         // Arrange
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.NameIdentifier, "invalid-guid")
-        };
+        var claims = new[] { new Claim(ClaimTypes.NameIdentifier, "invalid-guid") };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
 
@@ -60,7 +54,7 @@ public class ClaimsPrincipalExtensionsTests
         {
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
             new Claim("name", name),
-            new Claim(ClaimTypes.Email, email)
+            new Claim(ClaimTypes.Email, email),
         };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
@@ -83,7 +77,7 @@ public class ClaimsPrincipalExtensionsTests
         var claims = new[]
         {
             new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
-            new Claim(ClaimTypes.Email, email)
+            new Claim(ClaimTypes.Email, email),
         };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
@@ -96,10 +90,7 @@ public class ClaimsPrincipalExtensionsTests
     public void HasFullAccess_WithFullAccessRole_ReturnsTrue()
     {
         // Arrange
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Role, SharedRoleNames.FullAccess)
-        };
+        var claims = new[] { new Claim(ClaimTypes.Role, SharedRoleNames.FullAccess) };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
 
@@ -114,10 +105,7 @@ public class ClaimsPrincipalExtensionsTests
     public void HasFullAccess_WithoutFullAccessRole_ReturnsFalse()
     {
         // Arrange
-        var claims = new[]
-        {
-            new Claim(ClaimTypes.Role, "other-role")
-        };
+        var claims = new[] { new Claim(ClaimTypes.Role, "other-role") };
         var identity = new ClaimsIdentity(claims);
         var principal = new ClaimsPrincipal(identity);
 

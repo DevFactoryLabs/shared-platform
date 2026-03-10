@@ -8,12 +8,14 @@ public static class InboxResilience
     public static ResiliencePipeline CreateDefault()
     {
         return new ResiliencePipelineBuilder()
-            .AddRetry(new RetryStrategyOptions
-            {
-                BackoffType = DelayBackoffType.Exponential,
-                UseJitter = true,
-                MaxRetryAttempts = 5
-            })
+            .AddRetry(
+                new RetryStrategyOptions
+                {
+                    BackoffType = DelayBackoffType.Exponential,
+                    UseJitter = true,
+                    MaxRetryAttempts = 5,
+                }
+            )
             .Build();
     }
 }

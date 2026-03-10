@@ -4,6 +4,7 @@ namespace Shared.Identity.Authorization;
 
 public static class PolicyExtensions
 {
-    public static AuthorizationPolicyBuilder RequireFullAccess(this AuthorizationPolicyBuilder builder) =>
-        builder.RequireRole(SharedRoleNames.FullAccess);
+    public static AuthorizationPolicyBuilder RequireFullAccess(
+        this AuthorizationPolicyBuilder builder
+    ) => builder.RequireRole(SharedRoleNames.FullAccess);
 }

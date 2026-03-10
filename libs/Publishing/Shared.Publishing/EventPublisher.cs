@@ -12,14 +12,22 @@ public class EventPublisher(IServiceProvider serviceProvider) : IEventPublisher
     {
         ArgumentNullException.ThrowIfNull(eventBase);
 
-        var handler = EventHandlers.GetOrAdd(eventBase.GetType(), static eventType =>
-        {
-            var wrapperType = typeof(EventHandlerWrapperImplementation<>).MakeGenericType(eventType);
-            var wrapper = Activator.CreateInstance(wrapperType) ??
-                throw new InvalidOperationException($"Could not create wrapper for type {eventType}");
+        var handler = EventHandlers.GetOrAdd(
+            eventBase.GetType(),
+            static eventType =>
+            {
+                var wrapperType = typeof(EventHandlerWrapperImplementation<>).MakeGenericType(
+                    eventType
+                );
+                var wrapper =
+                    Activator.CreateInstance(wrapperType)
+                    ?? throw new InvalidOperationException(
+                        $"Could not create wrapper for type {eventType}"
+                    );
 
-            return (IEventHandlerWrapper)wrapper;
-        });
+                return (IEventHandlerWrapper)wrapper;
+            }
+        );
 
         return handler.Handle(eventBase, serviceProvider, PublishCore, cancellationToken);
     }
@@ -27,7 +35,8 @@ public class EventPublisher(IServiceProvider serviceProvider) : IEventPublisher
     protected static async Task PublishCore(
         IEnumerable<EventHandlerExecutor> handlerExecutors,
         IEventBase eventBase,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         foreach (var handler in handlerExecutors)
         {

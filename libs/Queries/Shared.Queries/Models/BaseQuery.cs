@@ -31,9 +31,7 @@ public abstract record BaseQuery
 
     private static string? SetOrder(string? orderBy)
     {
-        return string.IsNullOrWhiteSpace(orderBy) ?
-            null :
-            orderBy.Trim().ToLowerInvariant();
+        return string.IsNullOrWhiteSpace(orderBy) ? null : orderBy.Trim().ToLowerInvariant();
     }
 
     private static int SetPageSize(int? value)
@@ -43,4 +41,3 @@ public abstract record BaseQuery
         return pageSize > MaxPageSize ? MaxPageSize : pageSize;
     }
 }
-

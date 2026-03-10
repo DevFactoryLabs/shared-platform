@@ -169,17 +169,11 @@ public class TestEvent : IEventBase
     public DateTime OccurredOn { get; set; } = DateTime.UtcNow;
 }
 
-public class TestCommand : ICommand<TestResult>
-{
-}
+public class TestCommand : ICommand<TestResult> { }
 
-public class TestCommandWithoutResult : ICommand
-{
-}
+public class TestCommandWithoutResult : ICommand { }
 
-public class TestQuery : IQuery<TestQueryResult>
-{
-}
+public class TestQuery : IQuery<TestQueryResult> { }
 
 public class TestResult
 {
@@ -201,7 +195,10 @@ public class TestEventHandler : IEventHandler<TestEvent>
 
 public class TestCommandHandler : ICommandHandler<TestCommand, TestResult>
 {
-    public Task<Result<TestResult>> Handle(TestCommand command, CancellationToken cancellationToken = default)
+    public Task<Result<TestResult>> Handle(
+        TestCommand command,
+        CancellationToken cancellationToken = default
+    )
     {
         return Task.FromResult(Result<TestResult>.Success(new TestResult()));
     }
@@ -209,7 +206,10 @@ public class TestCommandHandler : ICommandHandler<TestCommand, TestResult>
 
 public class TestCommandWithoutResultHandler : ICommandHandler<TestCommandWithoutResult>
 {
-    public Task<Result> Handle(TestCommandWithoutResult command, CancellationToken cancellationToken = default)
+    public Task<Result> Handle(
+        TestCommandWithoutResult command,
+        CancellationToken cancellationToken = default
+    )
     {
         return Task.FromResult(Result.Success());
     }
@@ -217,7 +217,10 @@ public class TestCommandWithoutResultHandler : ICommandHandler<TestCommandWithou
 
 public class TestQueryHandler : IQueryHandler<TestQuery, TestQueryResult>
 {
-    public Task<Result<TestQueryResult>> Handle(TestQuery query, CancellationToken cancellationToken = default)
+    public Task<Result<TestQueryResult>> Handle(
+        TestQuery query,
+        CancellationToken cancellationToken = default
+    )
     {
         return Task.FromResult(Result<TestQueryResult>.Success(new TestQueryResult()));
     }
@@ -225,12 +228,13 @@ public class TestQueryHandler : IQueryHandler<TestQuery, TestQueryResult>
 
 public abstract class AbstractTestHandler : IEventHandler<TestEvent>
 {
-    public abstract Task HandleAsync(TestEvent @event, CancellationToken cancellationToken = default);
+    public abstract Task HandleAsync(
+        TestEvent @event,
+        CancellationToken cancellationToken = default
+    );
 }
 
-public interface ITestService
-{
-}
+public interface ITestService { }
 
 public class NonHandlerClass
 {

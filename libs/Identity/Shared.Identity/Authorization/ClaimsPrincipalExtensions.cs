@@ -9,9 +9,9 @@ public static class ClaimsPrincipalExtensions
     {
         string? userId = principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-        return Guid.TryParse(userId, out Guid parsedUserId) ?
-            parsedUserId :
-            throw new InvalidOperationException("User identifier is unavailable");
+        return Guid.TryParse(userId, out Guid parsedUserId)
+            ? parsedUserId
+            : throw new InvalidOperationException("User identifier is unavailable");
     }
 
     public static IdentityUser GetUser(this ClaimsPrincipal? principal)
@@ -21,13 +21,19 @@ public static class ClaimsPrincipalExtensions
         string? email = principal?.FindFirst(ClaimTypes.Email)?.Value;
 
         if (!Guid.TryParse(stringUserId, out var userId))
+        {
             throw new InvalidOperationException("User identifier is unavailable");
+        }
 
         if (name is null)
+        {
             throw new InvalidOperationException("User name is unavailable");
+        }
 
         if (email is null)
+        {
             throw new InvalidOperationException("User email is unavailable");
+        }
 
         return new IdentityUser(userId, name, email);
     }

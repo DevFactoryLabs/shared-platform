@@ -4,7 +4,10 @@ namespace Shared.Publishing;
 
 public interface IEventHandlerWrapper
 {
-    Task Handle(IEventBase eventBase, IServiceProvider serviceProvider,
+    Task Handle(
+        IEventBase eventBase,
+        IServiceProvider serviceProvider,
         Func<IEnumerable<EventHandlerExecutor>, IEventBase, CancellationToken, Task> publish,
-        CancellationToken cancellationToken);
+        CancellationToken cancellationToken
+    );
 }

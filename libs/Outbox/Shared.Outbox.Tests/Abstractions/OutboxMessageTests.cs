@@ -54,11 +54,7 @@ public class OutboxMessageTests
         var id = Guid.NewGuid();
         var content = new TestContent("Test", 123);
         var occurredOn = DateTime.UtcNow;
-        var headers = new Dictionary<string, string>
-        {
-            { "key1", "value1" },
-            { "key2", "value2" }
-        };
+        var headers = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
 
         // Act
         var message = OutboxMessage.Create(destination, id, content, occurredOn, headers);
@@ -67,7 +63,9 @@ public class OutboxMessageTests
         Assert.NotNull(message.Headers);
         Assert.NotEqual(string.Empty, message.Headers);
 
-        var deserializedHeaders = JsonSerializer.Deserialize<Dictionary<string, string>>(message.Headers);
+        var deserializedHeaders = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            message.Headers
+        );
         Assert.Equal(headers, deserializedHeaders);
     }
 
@@ -95,7 +93,12 @@ public class OutboxMessageTests
     public void MarkAsProcessed_WhenCalled_ShouldSetProcessedOnToCurrentTime()
     {
         // Arrange
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), DateTime.UtcNow);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            DateTime.UtcNow
+        );
         var beforeProcessing = DateTime.UtcNow;
 
         // Act
@@ -112,7 +115,12 @@ public class OutboxMessageTests
     public void MarkAsFailed_WhenCalledWithError_ShouldSetErrorAndMarkAsProcessed()
     {
         // Arrange
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), DateTime.UtcNow);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            DateTime.UtcNow
+        );
         var errorMessage = "Test error message";
         var beforeFailure = DateTime.UtcNow;
 
@@ -134,7 +142,12 @@ public class OutboxMessageTests
     public void GetHeaders_WhenHeadersIsEmpty_ShouldReturnNull()
     {
         // Arrange
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), DateTime.UtcNow);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            DateTime.UtcNow
+        );
 
         // Act
         var headers = message.GetHeaders();
@@ -150,9 +163,15 @@ public class OutboxMessageTests
         var originalHeaders = new Dictionary<string, string>
         {
             { "key1", "value1" },
-            { "key2", "value2" }
+            { "key2", "value2" },
         };
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), DateTime.UtcNow, originalHeaders);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            DateTime.UtcNow,
+            originalHeaders
+        );
 
         // Act
         var headers = message.GetHeaders();
@@ -187,13 +206,23 @@ public class OutboxMessageTests
     {
         // Arrange
         var baseTime = DateTime.UtcNow;
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), baseTime);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            baseTime
+        );
         message.MarkAsProcessedWithSuccess();
         var firstProcessedOn = message.ProcessedOn;
 
         // Act
         // Simulate a delay by creating a new message with a later timestamp
-        var laterMessage = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), baseTime.AddMilliseconds(1));
+        var laterMessage = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            baseTime.AddMilliseconds(1)
+        );
         laterMessage.MarkAsProcessedWithSuccess();
         laterMessage.MarkAsProcessedWithSuccess(); // Call twice to test the update
 
@@ -207,7 +236,12 @@ public class OutboxMessageTests
     {
         // Arrange
         var baseTime = DateTime.UtcNow;
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), baseTime);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            baseTime
+        );
         message.MarkAsProcessedWithSuccess();
         var originalProcessedOn = message.ProcessedOn;
 
@@ -232,14 +266,21 @@ public class OutboxMessageTests
         var occurredOn = DateTime.UtcNow;
 
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => OutboxMessage.Create<TestContent>(destination, id, null!, occurredOn));
+        Assert.Throws<NullReferenceException>(
+            () => OutboxMessage.Create<TestContent>(destination, id, null!, occurredOn)
+        );
     }
 
     [Fact]
     public void MarkAsFailed_WhenCalledWithNullError_ShouldSetNullError()
     {
         // Arrange
-        var message = OutboxMessage.Create("dest", Guid.NewGuid(), new TestContent("Test", 1), DateTime.UtcNow);
+        var message = OutboxMessage.Create(
+            "dest",
+            Guid.NewGuid(),
+            new TestContent("Test", 1),
+            DateTime.UtcNow
+        );
 
         // Act
         message.MarkAsProcessedWithError(null!);

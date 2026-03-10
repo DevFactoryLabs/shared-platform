@@ -18,8 +18,8 @@ public class InboxIntegrationEventConsumer<TEvent>(
     ILogger<InboxIntegrationEventConsumer<TEvent>> logger,
     IMessageBusConnectionFactory busFactory,
     IInboxStorage inboxStorage,
-    InboxSettings settings)
-    : BackgroundService
+    InboxSettings settings
+) : BackgroundService
     where TEvent : IIntegrationEvent
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -36,7 +36,9 @@ public class InboxIntegrationEventConsumer<TEvent>(
             var integrationEvent = DeserializeEvent(args);
 
             if (await inboxStorage.IsAlreadyProcessedAsync(integrationEvent.Id, stoppingToken))
+            {
                 return;
+            }
 
             var headers = ExtractHeaders(args);
 
@@ -47,18 +49,27 @@ public class InboxIntegrationEventConsumer<TEvent>(
                     integrationEvent,
                     integrationEvent.OccurredOn,
                     headers
-                    );
+                );
 
                 await inboxStorage.AddAsync(inboxMessage, stoppingToken);
 
                 await channel.BasicAckAsync(args.DeliveryTag, false);
 
-                logger.LogInformation("Consumed message '{MessageType}' with id '{Id}' in '{Module}'",
-                    inboxMessage.GetTypeName(), integrationEvent.Id, moduleName);
+                logger.LogInformation(
+                    "Consumed message '{MessageType}' with id '{Id}' in '{Module}'",
+                    inboxMessage.GetTypeName(),
+                    integrationEvent.Id,
+                    moduleName
+                );
             }
         };
 
-        await channel.BasicConsumeAsync(queueName, false, consumer, cancellationToken: stoppingToken);
+        await channel.BasicConsumeAsync(
+            queueName,
+            false,
+            consumer,
+            cancellationToken: stoppingToken
+        );
 
         while (!stoppingToken.IsCancellationRequested)
         {
@@ -70,20 +81,32 @@ public class InboxIntegrationEventConsumer<TEvent>(
     {
         var queueName = $"{moduleName.ToLowerInvariant()}-{exchangeName}";
 
-        await channel.ExchangeDeclareAsync(exchangeName, ExchangeType.Fanout, cancellationToken: stoppingToken);
-        await channel.QueueDeclareAsync(queueName, exclusive: false, cancellationToken: stoppingToken);
-        await channel.QueueBindAsync(queueName, exchangeName, string.Empty, cancellationToken: stoppingToken);
+        await channel.ExchangeDeclareAsync(
+            exchangeName,
+            ExchangeType.Fanout,
+            cancellationToken: stoppingToken
+        );
+        await channel.QueueDeclareAsync(
+            queueName,
+            exclusive: false,
+            cancellationToken: stoppingToken
+        );
+        await channel.QueueBindAsync(
+            queueName,
+            exchangeName,
+            string.Empty,
+            cancellationToken: stoppingToken
+        );
 
         return queueName;
     }
 
     private static Dictionary<string, string> ExtractHeaders(BasicDeliverEventArgs args)
     {
-        return args.BasicProperties.Headers?
-            .ToDictionary(
+        return args.BasicProperties.Headers?.ToDictionary(
                 header => header.Key,
-                header => Encoding.UTF8.GetString((byte[])header.Value!))
-            ?? [];
+                header => Encoding.UTF8.GetString((byte[])header.Value!)
+            ) ?? [];
     }
 
     private static TEvent DeserializeEvent(BasicDeliverEventArgs args)
@@ -92,7 +115,7 @@ public class InboxIntegrationEventConsumer<TEvent>(
         var message = Encoding.UTF8.GetString(body);
         var integrationEvent = JsonSerializer.Deserialize<TEvent>(message);
 
-        return integrationEvent ?? throw new InvalidOperationException($"Can't deserialize the message '{message}'");
+        return integrationEvent
+            ?? throw new InvalidOperationException($"Can't deserialize the message '{message}'");
     }
 }
-

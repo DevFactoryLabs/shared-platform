@@ -16,8 +16,8 @@ public class InboxProcessorBackgroundService(
     ILogger<InboxProcessorBackgroundService> logger,
     IInboxStorage inboxStorage,
     ResiliencePipeline resiliencePipeline,
-    InboxSettings settings)
-    : BackgroundService
+    InboxSettings settings
+) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -45,42 +45,62 @@ public class InboxProcessorBackgroundService(
         }
     }
 
-    private async Task ProcessMessage(InboxMessage inboxMessage, CancellationToken cancellationToken)
+    private async Task ProcessMessage(
+        InboxMessage inboxMessage,
+        CancellationToken cancellationToken
+    )
     {
         try
         {
-            await resiliencePipeline.ExecuteAsync(async internalCancelationToken =>
-            {
-                var integrationEvent = inboxMessage.GetContent();
+            await resiliencePipeline.ExecuteAsync(
+                async internalCancelationToken =>
+                {
+                    var integrationEvent = inboxMessage.GetContent();
 
-                await publisher.Publish(integrationEvent, internalCancelationToken);
+                    await publisher.Publish(integrationEvent, internalCancelationToken);
 
-                inboxMessage.MarkAsProcessedWithSuccess();
+                    inboxMessage.MarkAsProcessedWithSuccess();
 
-                logger.LogInformation("Processed message '{MessageType}' with id '{Id}' in '{Module}'",
-                    inboxMessage.GetTypeName(), inboxMessage.Id, moduleName);
-
-            }, cancellationToken);
+                    logger.LogInformation(
+                        "Processed message '{MessageType}' with id '{Id}' in '{Module}'",
+                        inboxMessage.GetTypeName(),
+                        inboxMessage.Id,
+                        moduleName
+                    );
+                },
+                cancellationToken
+            );
         }
         catch (Exception exception)
         {
             inboxMessage.MarkAsProcessedWithError(exception.Message);
 
-            logger.LogError(exception, "Failed to process message '{MessageType}' with id '{Id}' in '{Module}'",
-                inboxMessage.GetTypeName(), inboxMessage.Id, moduleName);
+            logger.LogError(
+                exception,
+                "Failed to process message '{MessageType}' with id '{Id}' in '{Module}'",
+                inboxMessage.GetTypeName(),
+                inboxMessage.Id,
+                moduleName
+            );
         }
     }
 
     private static void SetCorrelationId(
-        ICorrelationContext correlationAccessor, Dictionary<string, string>? headers)
+        ICorrelationContext correlationAccessor,
+        Dictionary<string, string>? headers
+    )
     {
         if (headers is null)
+        {
             return;
+        }
 
         var correlationId = headers["correlation_id"].ToString();
 
         if (correlationId is null)
+        {
             return;
+        }
 
         correlationAccessor.SetCorrelationId(correlationId);
     }

@@ -6,9 +6,8 @@ public class BaseQueryTests
 {
     private record TestQuery : BaseQuery
     {
-        public TestQuery(int? page, int? pageSize, string? orderBy) : base(page, pageSize, orderBy)
-        {
-        }
+        public TestQuery(int? page, int? pageSize, string? orderBy)
+            : base(page, pageSize, orderBy) { }
     }
 
     [Fact]

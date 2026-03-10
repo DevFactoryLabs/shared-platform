@@ -15,9 +15,7 @@ public class InboxMessage
         Headers = headers;
     }
 
-    private InboxMessage()
-    {
-    }
+    private InboxMessage() { }
 
     public Guid Id { get; init; } = IdGenerator.CreateSequential();
     public string? Headers { get; init; } = string.Empty;
@@ -52,7 +50,11 @@ public class InboxMessage
     }
 
     public static InboxMessage Create<TContent>(
-        Guid eventId, TContent content, DateTime occurredOn, IDictionary<string, string>? headersDictionary = null)
+        Guid eventId,
+        TContent content,
+        DateTime occurredOn,
+        IDictionary<string, string>? headersDictionary = null
+    )
     {
         string? headersJson = null;
 
@@ -61,7 +63,8 @@ public class InboxMessage
             headersJson = JsonSerializer.Serialize(headersDictionary);
         }
 
-        var contentType = content!.GetType().FullName + ", " + content.GetType().Assembly.GetName().Name;
+        var contentType =
+            content!.GetType().FullName + ", " + content.GetType().Assembly.GetName().Name;
         var contentJson = JsonSerializer.Serialize(content);
 
         return new InboxMessage(eventId, contentType, contentJson, occurredOn, headersJson);
@@ -77,7 +80,8 @@ public class InboxMessage
 
     public Dictionary<string, string>? GetHeaders()
     {
-        return string.IsNullOrEmpty(Headers) ?
-            null : JsonSerializer.Deserialize<Dictionary<string, string>>(Headers);
+        return string.IsNullOrEmpty(Headers)
+            ? null
+            : JsonSerializer.Deserialize<Dictionary<string, string>>(Headers);
     }
 }

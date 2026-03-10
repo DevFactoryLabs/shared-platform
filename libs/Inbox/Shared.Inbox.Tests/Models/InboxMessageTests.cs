@@ -55,11 +55,7 @@ public class InboxMessageTests
         var eventId = Guid.NewGuid();
         var content = new TestIntegrationEvent("Test", 123);
         var occurredOn = DateTime.UtcNow;
-        var headers = new Dictionary<string, string>
-        {
-            { "key1", "value1" },
-            { "key2", "value2" }
-        };
+        var headers = new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } };
 
         // Act
         var message = InboxMessage.Create(eventId, content, occurredOn, headers);
@@ -68,7 +64,9 @@ public class InboxMessageTests
         Assert.NotNull(message.Headers);
         Assert.NotEqual(string.Empty, message.Headers);
 
-        var deserializedHeaders = JsonSerializer.Deserialize<Dictionary<string, string>>(message.Headers);
+        var deserializedHeaders = JsonSerializer.Deserialize<Dictionary<string, string>>(
+            message.Headers
+        );
         Assert.Equal(headers, deserializedHeaders);
     }
 
@@ -95,7 +93,11 @@ public class InboxMessageTests
     public void MarkAsProcessed_WhenCalled_ShouldSetProcessedOnToCurrentTime()
     {
         // Arrange
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), DateTime.UtcNow);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            DateTime.UtcNow
+        );
         var beforeProcessing = DateTime.UtcNow;
 
         // Act
@@ -112,7 +114,11 @@ public class InboxMessageTests
     public void MarkAsFailed_WhenCalledWithError_ShouldSetErrorAndMarkAsProcessed()
     {
         // Arrange
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), DateTime.UtcNow);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            DateTime.UtcNow
+        );
         var errorMessage = "Test error message";
         var beforeFailure = DateTime.UtcNow;
 
@@ -134,7 +140,11 @@ public class InboxMessageTests
     public void GetHeaders_WhenHeadersIsEmpty_ShouldReturnNull()
     {
         // Arrange
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), DateTime.UtcNow);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            DateTime.UtcNow
+        );
 
         // Act
         var headers = message.GetHeaders();
@@ -150,9 +160,14 @@ public class InboxMessageTests
         var originalHeaders = new Dictionary<string, string>
         {
             { "key1", "value1" },
-            { "key2", "value2" }
+            { "key2", "value2" },
         };
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), DateTime.UtcNow, originalHeaders);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            DateTime.UtcNow,
+            originalHeaders
+        );
 
         // Act
         var headers = message.GetHeaders();
@@ -206,13 +221,21 @@ public class InboxMessageTests
     {
         // Arrange
         var baseTime = DateTime.UtcNow;
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), baseTime);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            baseTime
+        );
         message.MarkAsProcessedWithSuccess();
         var firstProcessedOn = message.ProcessedOn;
 
         // Act
         // Create another message to test timestamp comparison without Thread.Sleep
-        var laterMessage = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), baseTime.AddMilliseconds(1));
+        var laterMessage = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            baseTime.AddMilliseconds(1)
+        );
         laterMessage.MarkAsProcessedWithSuccess();
         laterMessage.MarkAsProcessedWithSuccess(); // Call twice to test update
 
@@ -226,7 +249,11 @@ public class InboxMessageTests
     {
         // Arrange
         var baseTime = DateTime.UtcNow;
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), baseTime);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            baseTime
+        );
         message.MarkAsProcessedWithSuccess();
 
         // Act
@@ -248,14 +275,20 @@ public class InboxMessageTests
         var occurredOn = DateTime.UtcNow;
 
         // Act & Assert
-        Assert.Throws<NullReferenceException>(() => InboxMessage.Create<TestIntegrationEvent>(eventId, null!, occurredOn));
+        Assert.Throws<NullReferenceException>(
+            () => InboxMessage.Create<TestIntegrationEvent>(eventId, null!, occurredOn)
+        );
     }
 
     [Fact]
     public void MarkAsFailed_WhenCalledWithNullError_ShouldSetNullError()
     {
         // Arrange
-        var message = InboxMessage.Create(Guid.NewGuid(), new TestIntegrationEvent("Test", 1), DateTime.UtcNow);
+        var message = InboxMessage.Create(
+            Guid.NewGuid(),
+            new TestIntegrationEvent("Test", 1),
+            DateTime.UtcNow
+        );
 
         // Act
         message.MarkAsProcessedWithError(null!);

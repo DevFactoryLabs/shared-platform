@@ -6,9 +6,12 @@ namespace Shared.Publishing;
 public class EventHandlerWrapperImplementation<TEvent> : IEventHandlerWrapper
     where TEvent : IEventBase
 {
-    public Task Handle(IEventBase eventBase, IServiceProvider serviceProvider,
+    public Task Handle(
+        IEventBase eventBase,
+        IServiceProvider serviceProvider,
         Func<IEnumerable<EventHandlerExecutor>, IEventBase, CancellationToken, Task> publish,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken
+    )
     {
         var handlers = serviceProvider
             .GetServices<IEventHandler<TEvent>>()
@@ -16,7 +19,7 @@ public class EventHandlerWrapperImplementation<TEvent> : IEventHandlerWrapper
                 HandlerInstance: handler,
                 HandlerCallback: (eventToHandle, token) =>
                     handler.HandleAsync((TEvent)eventToHandle, token)
-                ));
+            ));
 
         return publish(handlers, eventBase, cancellationToken);
     }

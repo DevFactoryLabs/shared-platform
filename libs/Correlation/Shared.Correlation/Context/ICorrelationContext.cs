@@ -6,4 +6,3 @@ public interface ICorrelationContext
     string? GetCorrelationId();
     void SetCorrelationId(string correlationId);
 }
-

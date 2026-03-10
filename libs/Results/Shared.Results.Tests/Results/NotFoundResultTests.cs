@@ -77,8 +77,6 @@ public class NotFoundResultTests
         Assert.True(result.IsFailure);
     }
 
-
-
     [Fact]
     public void NotFoundResult_WithDifferentErrors_ShouldNotBeEqual()
     {
@@ -230,8 +228,6 @@ public class GenericNotFoundResultTests
         // Assert
         Assert.Equal(Guid.Empty, result.Data);
     }
-
-
 
     [Fact]
     public void GenericNotFoundResult_WithDifferentErrors_ShouldNotBeEqual()

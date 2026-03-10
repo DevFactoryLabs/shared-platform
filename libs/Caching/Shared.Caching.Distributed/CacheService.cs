@@ -13,7 +13,12 @@ public class CacheService(IDistributedCache cache) : ICacheService
         return bytes is null ? default : Deserialize<T>(bytes);
     }
 
-    public Task SetAsync<T>(string key, T value, TimeSpan? expiration = null, CancellationToken cancellationToken = default)
+    public Task SetAsync<T>(
+        string key,
+        T value,
+        TimeSpan? expiration = null,
+        CancellationToken cancellationToken = default
+    )
     {
         var bytes = Serialize(value);
 
@@ -23,8 +28,7 @@ public class CacheService(IDistributedCache cache) : ICacheService
     public Task RemoveAsync(string key, CancellationToken cancellationToken = default) =>
         cache.RemoveAsync(key, cancellationToken);
 
-    private static T Deserialize<T>(byte[] bytes) =>
-        JsonSerializer.Deserialize<T>(bytes)!;
+    private static T Deserialize<T>(byte[] bytes) => JsonSerializer.Deserialize<T>(bytes)!;
 
     private static readonly TimeSpan DefaultCacheExpiration = TimeSpan.FromMinutes(2);
 

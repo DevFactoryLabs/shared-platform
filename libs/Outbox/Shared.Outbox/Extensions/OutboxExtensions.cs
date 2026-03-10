@@ -19,7 +19,8 @@ public static class OutboxExtensions
         string moduleName,
         string connectionString,
         int intervalInSeconds,
-        int messagesBatchSize)
+        int messagesBatchSize
+    )
         where TDbContext : DbContext, IOutboxDbContext
     {
         services.AddKeyedScoped<IOutboxPublisher, OutboxPublisher<TDbContext>>(moduleName);
@@ -30,7 +31,7 @@ public static class OutboxExtensions
             {
                 ConnectionString = connectionString,
                 IntervalInSeconds = intervalInSeconds,
-                MessagesBatchSize = messagesBatchSize
+                MessagesBatchSize = messagesBatchSize,
             };
 
             var resiliencePipeline = OutboxResilience.CreateDefault();
@@ -47,7 +48,8 @@ public static class OutboxExtensions
                 logger,
                 outboxStorage,
                 resiliencePipeline,
-                settings);
+                settings
+            );
 
             return outboxProcessor;
         });

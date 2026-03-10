@@ -58,5 +58,4 @@ public class CpfValidator<T, TElement> : PropertyValidator<T, TElement>
 
         return cpf.EndsWith(digito);
     }
-
 }

@@ -14,8 +14,8 @@ public class OutboxProcessorBackgroundService(
     ILogger<OutboxProcessorBackgroundService> logger,
     IOutboxStorage outboxStorage,
     ResiliencePipeline resiliencePipeline,
-    OutboxSettings settings)
-    : BackgroundService
+    OutboxSettings settings
+) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -42,32 +42,46 @@ public class OutboxProcessorBackgroundService(
     }
 
     private async Task ProcessMessage(
-        OutboxMessage message, Dictionary<string, string>? headers, CancellationToken stoppingToken)
+        OutboxMessage message,
+        Dictionary<string, string>? headers,
+        CancellationToken stoppingToken
+    )
     {
         try
         {
-            await resiliencePipeline.ExecuteAsync(async cancelationToken =>
-            {
-                await messageBus.Publish(
-                    message.Content,
-                    message.Destination,
-                    headers,
-                    cancelationToken);
+            await resiliencePipeline.ExecuteAsync(
+                async cancelationToken =>
+                {
+                    await messageBus.Publish(
+                        message.Content,
+                        message.Destination,
+                        headers,
+                        cancelationToken
+                    );
 
-                message.MarkAsProcessedWithSuccess();
+                    message.MarkAsProcessedWithSuccess();
 
-                logger.LogInformation("Published message '{MessageType}' with id '{Id}' from '{Module}'",
-                    message.GetTypeName(), message.Id, moduleName);
-
-            }, stoppingToken);
+                    logger.LogInformation(
+                        "Published message '{MessageType}' with id '{Id}' from '{Module}'",
+                        message.GetTypeName(),
+                        message.Id,
+                        moduleName
+                    );
+                },
+                stoppingToken
+            );
         }
         catch (Exception ex)
         {
             message.MarkAsProcessedWithError(ex.Message);
 
-            logger.LogError(ex, "Failed to publish message '{MessageType}' with id '{Id}' from '{Module}'",
-                 message.GetTypeName(), message.Id, moduleName);
+            logger.LogError(
+                ex,
+                "Failed to publish message '{MessageType}' with id '{Id}' from '{Module}'",
+                message.GetTypeName(),
+                message.Id,
+                moduleName
+            );
         }
     }
 }
-

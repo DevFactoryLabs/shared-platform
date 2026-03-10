@@ -31,9 +31,10 @@ public class CorrelationLogProcessorTests
 
         // Assert
         Assert.NotNull(logRecord.Attributes);
-        Assert.Contains(logRecord.Attributes, attr =>
-            attr.Key == "correlation_id" &&
-            attr.Value?.ToString() == correlationId);
+        Assert.Contains(
+            logRecord.Attributes,
+            attr => attr.Key == "correlation_id" && attr.Value?.ToString() == correlationId
+        );
     }
 
     [Fact]
@@ -86,9 +87,10 @@ public class CorrelationLogProcessorTests
         // Assert
         Assert.NotNull(logRecord.Attributes);
         Assert.Single(logRecord.Attributes);
-        Assert.Contains(logRecord.Attributes, attr =>
-            attr.Key == "correlation_id" &&
-            attr.Value?.ToString() == correlationId);
+        Assert.Contains(
+            logRecord.Attributes,
+            attr => attr.Key == "correlation_id" && attr.Value?.ToString() == correlationId
+        );
     }
 
     [Fact]
@@ -109,9 +111,10 @@ public class CorrelationLogProcessorTests
         Assert.NotNull(logRecord.Attributes);
         Assert.Equal(2, logRecord.Attributes.Count);
         Assert.Contains(logRecord.Attributes, attr => attr.Key == "existing_key");
-        Assert.Contains(logRecord.Attributes, attr =>
-            attr.Key == "correlation_id" &&
-            attr.Value?.ToString() == correlationId);
+        Assert.Contains(
+            logRecord.Attributes,
+            attr => attr.Key == "correlation_id" && attr.Value?.ToString() == correlationId
+        );
     }
 
     private static LogRecord CreateMockLogRecord()

@@ -7,18 +7,30 @@ namespace Shared.Messaging;
 
 public class MessageBus(IMessageBusConnectionFactory messageBusConnectionFactory) : IMessageBus
 {
-    public async Task Publish(string message, string destination, IDictionary<string, string>? headers = null,
-        CancellationToken cancellationToken = default)
+    public async Task Publish(
+        string message,
+        string destination,
+        IDictionary<string, string>? headers = null,
+        CancellationToken cancellationToken = default
+    )
     {
-        using var connection = await messageBusConnectionFactory.CreateConnectionAsync(cancellationToken);
-        using var channel = await connection.CreateChannelAsync(cancellationToken: cancellationToken);
+        using var connection = await messageBusConnectionFactory.CreateConnectionAsync(
+            cancellationToken
+        );
+        using var channel = await connection.CreateChannelAsync(
+            cancellationToken: cancellationToken
+        );
 
         var properties = new BasicProperties
         {
             Headers = headers?.ToDictionary(h => h.Key, h => (object?)h.Value.ToString()),
         };
 
-        await channel.ExchangeDeclareAsync(destination, ExchangeType.Fanout, cancellationToken: cancellationToken);
+        await channel.ExchangeDeclareAsync(
+            destination,
+            ExchangeType.Fanout,
+            cancellationToken: cancellationToken
+        );
 
         var messageBody = Encoding.UTF8.GetBytes(message);
 
@@ -28,6 +40,7 @@ public class MessageBus(IMessageBusConnectionFactory messageBusConnectionFactory
             mandatory: false,
             basicProperties: properties,
             body: messageBody,
-            cancellationToken: cancellationToken);
+            cancellationToken: cancellationToken
+        );
     }
 }

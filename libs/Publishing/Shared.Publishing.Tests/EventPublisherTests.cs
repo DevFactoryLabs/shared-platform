@@ -23,8 +23,9 @@ public class EventPublisherTests
         TestEvent? nullEvent = null;
 
         // Act & Assert
-        await Assert.ThrowsAsync<ArgumentNullException>(() =>
-            _eventPublisher.Publish(nullEvent!, CancellationToken.None));
+        await Assert.ThrowsAsync<ArgumentNullException>(
+            () => _eventPublisher.Publish(nullEvent!, CancellationToken.None)
+        );
     }
 
     [Fact]
@@ -34,8 +35,9 @@ public class EventPublisherTests
         var testEvent = new TestEvent { Message = "Test message" };
 
         // Act & Assert
-        var exception = await Record.ExceptionAsync(() =>
-            _eventPublisher.Publish(testEvent, CancellationToken.None));
+        var exception = await Record.ExceptionAsync(
+            () => _eventPublisher.Publish(testEvent, CancellationToken.None)
+        );
 
         Assert.Null(exception);
     }
@@ -48,8 +50,9 @@ public class EventPublisherTests
         var cancellationToken = new CancellationToken(false);
 
         // Act
-        var exception = await Record.ExceptionAsync(async () =>
-            await _eventPublisher.Publish(testEvent, cancellationToken));
+        var exception = await Record.ExceptionAsync(
+            async () => await _eventPublisher.Publish(testEvent, cancellationToken)
+        );
 
         // Assert
         Assert.Null(exception);

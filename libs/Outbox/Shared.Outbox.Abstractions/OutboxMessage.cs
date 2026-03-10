@@ -5,7 +5,13 @@ namespace Shared.Outbox.Abstractions;
 public class OutboxMessage
 {
     private OutboxMessage(
-        Guid id, string type, string destination, string content, DateTime occurredOn, string? headers)
+        Guid id,
+        string type,
+        string destination,
+        string content,
+        DateTime occurredOn,
+        string? headers
+    )
     {
         Id = id;
         Type = type;
@@ -15,9 +21,7 @@ public class OutboxMessage
         Destination = destination;
     }
 
-    private OutboxMessage()
-    {
-    }
+    private OutboxMessage() { }
 
     public Guid Id { get; init; }
     public string? Headers { get; init; } = string.Empty;
@@ -53,8 +57,12 @@ public class OutboxMessage
     }
 
     public static OutboxMessage Create<TContent>(
-        string destination, Guid id, TContent content, DateTime occurredOn,
-        IDictionary<string, string>? headers = null)
+        string destination,
+        Guid id,
+        TContent content,
+        DateTime occurredOn,
+        IDictionary<string, string>? headers = null
+    )
     {
         string? headersJson = null;
 
@@ -63,15 +71,24 @@ public class OutboxMessage
             headersJson = JsonSerializer.Serialize(headers);
         }
 
-        var contentType = content!.GetType().FullName + ", " + content.GetType().Assembly.GetName().Name;
+        var contentType =
+            content!.GetType().FullName + ", " + content.GetType().Assembly.GetName().Name;
         var contentJson = JsonSerializer.Serialize(content);
 
-        return new OutboxMessage(id, contentType, destination, contentJson, occurredOn, headersJson);
+        return new OutboxMessage(
+            id,
+            contentType,
+            destination,
+            contentJson,
+            occurredOn,
+            headersJson
+        );
     }
 
     public Dictionary<string, string>? GetHeaders()
     {
-        return string.IsNullOrEmpty(Headers) ?
-            null : JsonSerializer.Deserialize<Dictionary<string, string>>(Headers);
+        return string.IsNullOrEmpty(Headers)
+            ? null
+            : JsonSerializer.Deserialize<Dictionary<string, string>>(Headers);
     }
 }

@@ -19,7 +19,8 @@ public static class InboxExtensions
         string exchangeName,
         string connectionString,
         int intervalInSeconds,
-        int messagesBatchSize)
+        int messagesBatchSize
+    )
         where TEvent : IIntegrationEvent
     {
         services.AddHostedService(sp =>
@@ -28,7 +29,7 @@ public static class InboxExtensions
             {
                 ConnectionString = connectionString,
                 IntervalInSeconds = intervalInSeconds,
-                MessagesBatchSize = messagesBatchSize
+                MessagesBatchSize = messagesBatchSize,
             };
 
             var logger = sp.GetRequiredService<ILogger<InboxIntegrationEventConsumer<TEvent>>>();
@@ -56,7 +57,8 @@ public static class InboxExtensions
         string moduleName,
         string connectionString,
         int intervalInSeconds,
-        int messagesBatchSize)
+        int messagesBatchSize
+    )
     {
         services.AddHostedService(sp =>
         {
@@ -64,7 +66,7 @@ public static class InboxExtensions
             {
                 ConnectionString = connectionString,
                 IntervalInSeconds = intervalInSeconds,
-                MessagesBatchSize = messagesBatchSize
+                MessagesBatchSize = messagesBatchSize,
             };
 
             var resiliencePipeline = InboxResilience.CreateDefault();
@@ -83,7 +85,8 @@ public static class InboxExtensions
                 logger,
                 inboxStorage,
                 resiliencePipeline,
-                settings);
+                settings
+            );
 
             return inboxProcessor;
         });

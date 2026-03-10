@@ -9,4 +9,3 @@ public interface IPagedList<out TItem>
     long TotalRecords { get; }
     IEnumerable<TItem>? Items { get; }
 }
-

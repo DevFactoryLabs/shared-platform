@@ -20,7 +20,7 @@ public class InboxStorageTests
         _settings = new InboxSettings
         {
             ConnectionString = _testConnectionString,
-            MessagesBatchSize = 10
+            MessagesBatchSize = 10,
         };
         _storage = new InboxStorage(_settings);
     }
@@ -36,7 +36,8 @@ public class InboxStorageTests
         // Note: This test would require a real database setup for proper integration testing
         // For unit testing, we would need to mock the database interactions
         await Assert.ThrowsAsync<ArgumentException>(
-            async () => await _storage.AddAsync(message, CancellationToken.None));
+            async () => await _storage.AddAsync(message, CancellationToken.None)
+        );
     }
 
     [Fact]
@@ -48,7 +49,8 @@ public class InboxStorageTests
         // Act & Assert
         // Note: This test would require a real database setup for proper integration testing
         await Assert.ThrowsAsync<ArgumentException>(
-            async () => await _storage.IsAlreadyProcessedAsync(existingId, CancellationToken.None));
+            async () => await _storage.IsAlreadyProcessedAsync(existingId, CancellationToken.None)
+        );
     }
 
     [Fact]
@@ -57,7 +59,8 @@ public class InboxStorageTests
         // Act & Assert
         // Note: This test would require a real database setup for proper integration testing
         await Assert.ThrowsAsync<ArgumentException>(
-            async () => await _storage.GetUnprocessedMessagesAsync(CancellationToken.None));
+            async () => await _storage.GetUnprocessedMessagesAsync(CancellationToken.None)
+        );
     }
 
     [Fact]

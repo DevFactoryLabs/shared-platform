@@ -7,17 +7,24 @@ public class HandlerTests
     private class TestGenericHandler : Handler<string>
     {
         public static Result<string> TestNotFound(Error error) => NotFound(error);
+
         public static Result<string> TestError(Error error) => Error(error);
+
         public static Result<string> TestError(Error[] errors) => Error(errors);
+
         public static Result<string> TestSuccess(string response) => Success(response);
     }
 
     private class TestHandler : Handler
     {
         public static Result TestStaticNotFound(Error error) => NotFound(error);
+
         public static Result TestStaticError(Error error) => Error(error);
+
         public static Result TestStaticError(Error[] errors) => Error(errors);
+
         public static Result TestStaticSuccess() => Success();
+
         public static Result TestStaticSuccessWithResponse<T>(T response) => Success(response);
     }
 

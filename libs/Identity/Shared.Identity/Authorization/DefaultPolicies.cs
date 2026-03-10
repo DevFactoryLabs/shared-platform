@@ -6,6 +6,6 @@ public static class DefaultPolicies
 {
     public static AuthorizationPolicyBuilder CreateOperationalUserPolicy() =>
         new AuthorizationPolicyBuilder(AuthenticationSchemes.Public)
-        .RequireAuthenticatedUser()
-        .RequireClaim("email_verified", "true");
+            .RequireAuthenticatedUser()
+            .RequireClaim("email_verified", "true");
 }

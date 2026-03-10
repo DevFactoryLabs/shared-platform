@@ -1,6 +1,7 @@
 ﻿namespace Shared.Queries.Pagination;
 
-public class PagedList<TItem>(IEnumerable<TItem>? items, long count, int pageNumber, int pageSize) : IPagedList<TItem>
+public class PagedList<TItem>(IEnumerable<TItem>? items, long count, int pageNumber, int pageSize)
+    : IPagedList<TItem>
     where TItem : class
 {
     public int PageNumber { get; } = pageNumber;

@@ -47,7 +47,12 @@ public class IntegrationEventTests
         var expectedId = Guid.NewGuid();
 
         // Act
-        var integrationEvent = new TestIntegrationEvent { Name = "Test", Value = 123, Id = expectedId };
+        var integrationEvent = new TestIntegrationEvent
+        {
+            Name = "Test",
+            Value = 123,
+            Id = expectedId,
+        };
 
         // Assert
         Assert.Equal(expectedId, integrationEvent.Id);
@@ -70,7 +75,12 @@ public class IntegrationEventTests
         var expectedDateTime = DateTime.UtcNow;
 
         // Act
-        var integrationEvent = new TestIntegrationEvent { Name = "Test", Value = 123, OccurredOn = expectedDateTime };
+        var integrationEvent = new TestIntegrationEvent
+        {
+            Name = "Test",
+            Value = 123,
+            OccurredOn = expectedDateTime,
+        };
 
         // Assert
         Assert.Equal(expectedDateTime, integrationEvent.OccurredOn);
@@ -84,8 +94,18 @@ public class IntegrationEventTests
         var id2 = Guid.NewGuid();
 
         // Act
-        var event1 = new TestIntegrationEvent { Name = "Test1", Value = 1, Id = id1 };
-        var event2 = new TestIntegrationEvent { Name = "Test2", Value = 2, Id = id2 };
+        var event1 = new TestIntegrationEvent
+        {
+            Name = "Test1",
+            Value = 1,
+            Id = id1,
+        };
+        var event2 = new TestIntegrationEvent
+        {
+            Name = "Test2",
+            Value = 2,
+            Id = id2,
+        };
 
         // Assert
         Assert.NotEqual(event1.Id, event2.Id);
@@ -101,8 +121,18 @@ public class IntegrationEventTests
         var time2 = DateTime.UtcNow.AddMinutes(1);
 
         // Act
-        var event1 = new TestIntegrationEvent { Name = "Test1", Value = 1, OccurredOn = time1 };
-        var event2 = new TestIntegrationEvent { Name = "Test2", Value = 2, OccurredOn = time2 };
+        var event1 = new TestIntegrationEvent
+        {
+            Name = "Test1",
+            Value = 1,
+            OccurredOn = time1,
+        };
+        var event2 = new TestIntegrationEvent
+        {
+            Name = "Test2",
+            Value = 2,
+            OccurredOn = time2,
+        };
 
         // Assert
         Assert.True(event2.OccurredOn > event1.OccurredOn);
@@ -125,7 +155,7 @@ public class IntegrationEventTests
             Name = name,
             Value = value,
             Id = id,
-            OccurredOn = occurredOn
+            OccurredOn = occurredOn,
         };
 
         // Assert

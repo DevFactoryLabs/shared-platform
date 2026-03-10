@@ -7,9 +7,12 @@ namespace Shared.Correlation.OpenTelemetry.Extensions;
 
 public static class OpenTelemetryExtensions
 {
-    public static OpenTelemetryLoggerOptions AddCorrelationLogProcessor(this OpenTelemetryLoggerOptions options)
+    public static OpenTelemetryLoggerOptions AddCorrelationLogProcessor(
+        this OpenTelemetryLoggerOptions options
+    )
     {
-        return options.AddProcessor(serviceProvider =>
-            new CorrelationLogProcessor(serviceProvider.GetRequiredService<ICorrelationContext>()));
+        return options.AddProcessor(serviceProvider => new CorrelationLogProcessor(
+            serviceProvider.GetRequiredService<ICorrelationContext>()
+        ));
     }
 }
