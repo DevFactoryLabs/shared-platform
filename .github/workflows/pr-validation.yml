@@ -39,6 +39,9 @@ jobs:
       - name: Install SonarCloud scanner
         run: dotnet tool install --global dotnet-sonarscanner
 
+      - name: Install dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+
       - name: Build and analyze
         run: |
           dotnet sonarscanner begin \
@@ -46,19 +49,17 @@ jobs:
             /o:"${{ vars.SONAR_ORGANIZATION_KEY }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/**/coverage.cobertura.xml" \
+            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/coverage.cobertura.xml" \
             /d:sonar.pullrequest.key="${{ github.event.pull_request.number }}" \
             /d:sonar.pullrequest.branch="${{ github.head_ref }}" \
             /d:sonar.pullrequest.base="${{ github.base_ref }}"
 
           dotnet build shared-platform.slnx --no-restore --configuration Release
 
-          dotnet test shared-platform.slnx \
-            --configuration Release \
-            --collect:"XPlat Code Coverage" \
-            --settings coverlet.runsettings \
-            --results-directory ./coverage-results \
-            --logger "trx;LogFileName=test-results.trx"
+          dotnet-coverage collect \
+            "dotnet test shared-platform.slnx --configuration Release --no-restore --logger trx" \
+            --output ./coverage-results/coverage.cobertura.xml \
+            --output-format cobertura
 
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
@@ -73,7 +74,7 @@ jobs:
         run: |
           dotnet tool restore
           dotnet reportgenerator \
-            -reports:"coverage-results/**/coverage.cobertura.xml" \
+            -reports:"coverage-results/coverage.cobertura.xml" \
             -targetdir:"coverage-report" \
             -reporttypes:"Html;MarkdownSummaryGithub"
 
