@@ -89,7 +89,7 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          dotnet reportgenerator \
+          reportgenerator \
             -reports:"coverage-results/coverage.xml" \
             -targetdir:"coverage-report" \
             -reporttypes:"Html;MarkdownSummaryGithub"
