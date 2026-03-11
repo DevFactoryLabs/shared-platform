@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,21 +38,17 @@ jobs:
       - name: Install SonarCloud scanner
         run: dotnet tool install --global dotnet-sonarscanner
 
-      - name: SonarCloud Begin
+      - name: Build and analyze
         run: |
           dotnet sonarscanner begin \
             /k:"${{ vars.SONAR_PROJECT_KEY }}" \
             /o:"${{ vars.SONAR_ORGANIZATION_KEY }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/**/coverage.cobertura.xml" \
-            /d:sonar.scanner.scanAll=false
+            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/**/coverage.cobertura.xml"
 
-      - name: Build
-        run: dotnet build shared-platform.slnx --no-restore --configuration Release
+          dotnet build shared-platform.slnx --no-restore --configuration Release
 
-      - name: Test
-        run: |
           dotnet test shared-platform.slnx \
             --configuration Release \
             --collect:"XPlat Code Coverage" \
@@ -59,13 +56,10 @@ jobs:
             --results-directory ./coverage-results \
             --logger "trx;LogFileName=test-results.trx"
 
-      - name: Verify coverage files
-        run: |
           echo "Coverage files found:"
           find ./coverage-results -name "coverage.cobertura.xml" | while read f; do
             echo "  $f"
             grep -o 'line-rate="[^"]*"' "$f" | head -1
           done
 
-      - name: SonarCloud End
-        run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
