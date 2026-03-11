@@ -48,13 +48,13 @@ jobs:
             /o:"${{ vars.SONAR_ORGANIZATION_KEY }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/coverage.cobertura.xml"
+            /d:sonar.cs.vscoveragexml.reportsPaths="${{ github.workspace }}/coverage-results/coverage.xml"
 
           dotnet build shared-platform.slnx --no-restore --configuration Release
 
           dotnet-coverage collect \
             "dotnet test shared-platform.slnx --configuration Release --no-restore --logger trx" \
-            --output ./coverage-results/coverage.cobertura.xml \
-            --output-format cobertura
+            --output ./coverage-results/coverage.xml \
+            --output-format xml
 
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
