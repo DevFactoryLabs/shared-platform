@@ -44,7 +44,7 @@ jobs:
             /o:"${{ vars.SONAR_ORGANIZATION_KEY }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.cobertura.reportsPaths="coverage-results/**/coverage.cobertura.xml" \
+            /d:sonar.cs.cobertura.reportsPaths="${{ github.workspace }}/coverage-results/**/coverage.cobertura.xml" \
             /d:sonar.scanner.scanAll=false
 
       - name: Build
@@ -58,6 +58,14 @@ jobs:
             --settings coverlet.runsettings \
             --results-directory ./coverage-results \
             --logger "trx;LogFileName=test-results.trx"
+
+      - name: Verify coverage files
+        run: |
+          echo "Coverage files found:"
+          find ./coverage-results -name "coverage.cobertura.xml" | while read f; do
+            echo "  $f"
+            grep -o 'line-rate="[^"]*"' "$f" | head -1
+          done
 
       - name: SonarCloud End
         run: dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
