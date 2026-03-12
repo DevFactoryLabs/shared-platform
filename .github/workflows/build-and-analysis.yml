@@ -57,18 +57,26 @@ jobs:
         run: dotnet tool install --global dotnet-reportgenerator-globaltool
 
       - name: Build and analyze
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_REF: ${{ github.head_ref }}
+          BASE_REF: ${{ github.base_ref }}
+          SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION_KEY: ${{ vars.SONAR_ORGANIZATION_KEY }}
+          WORKSPACE: ${{ github.workspace }}
         run: |
           SONAR_PR_PARAMS=""
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            SONAR_PR_PARAMS="/d:sonar.pullrequest.key=${{ github.event.pull_request.number }} /d:sonar.pullrequest.branch=${{ github.head_ref }} /d:sonar.pullrequest.base=${{ github.base_ref }}"
+          if [ "$EVENT_NAME" == "pull_request" ]; then
+            SONAR_PR_PARAMS="/d:sonar.pullrequest.key=$PR_NUMBER /d:sonar.pullrequest.branch=$HEAD_REF /d:sonar.pullrequest.base=$BASE_REF"
           fi
 
           dotnet sonarscanner begin \
-            /k:"${{ vars.SONAR_PROJECT_KEY }}" \
-            /o:"${{ vars.SONAR_ORGANIZATION_KEY }}" \
-            /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+            /k:"$SONAR_PROJECT_KEY" \
+            /o:"$SONAR_ORGANIZATION_KEY" \
+            /d:sonar.token="$SONAR_TOKEN" \
             /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.cs.vscoveragexml.reportsPaths="${{ github.workspace }}/coverage-results/coverage.xml" \
+            /d:sonar.cs.vscoveragexml.reportsPaths="$WORKSPACE/coverage-results/coverage.xml" \
             $SONAR_PR_PARAMS
 
           dotnet build shared-platform.slnx --no-restore --configuration Release
@@ -78,7 +86,7 @@ jobs:
             --output ./coverage-results/coverage.xml \
             --output-format xml
 
-          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
 
       - name: Upload test results
         uses: actions/upload-artifact@v4
