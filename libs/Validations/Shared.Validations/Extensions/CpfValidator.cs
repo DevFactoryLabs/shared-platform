@@ -11,7 +11,8 @@ public class CpfValidator<T, TElement> : PropertyValidator<T, TElement>
 
     public override bool IsValid(ValidationContext<T> context, TElement value)
     {
-        return string.IsNullOrWhiteSpace(value!.ToString()) || ValidateCpf(value.ToString()!);
+        var strValue = value?.ToString();
+        return string.IsNullOrWhiteSpace(strValue) || ValidateCpf(strValue!);
     }
 
     // Private Methods

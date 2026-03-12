@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using NSubstitute;
 using Shared.Core.Events;
+using Shared.Publishing.Extensions;
 
 namespace Shared.Publishing.Tests;
 
@@ -107,5 +108,36 @@ public class EventPublisherTests
         public Guid Id { get; } = Guid.NewGuid();
         public string Message { get; set; } = string.Empty;
         public DateTime OccurredOn => DateTime.UtcNow;
+    }
+}
+
+public class PublishingExtensionsTests
+{
+    [Fact]
+    public void AddEventPublishing_ShouldRegisterEventPublisherAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddEventPublishing();
+
+        // Assert
+        var descriptor = Assert.Single(services, sd => sd.ServiceType == typeof(IEventPublisher));
+        Assert.Equal(ServiceLifetime.Transient, descriptor.Lifetime);
+        Assert.Equal(typeof(EventPublisher), descriptor.ImplementationType);
+    }
+
+    [Fact]
+    public void AddEventPublishing_ShouldReturnServiceCollection()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        var result = services.AddEventPublishing();
+
+        // Assert
+        Assert.Same(services, result);
     }
 }

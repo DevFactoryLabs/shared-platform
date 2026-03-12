@@ -11,7 +11,8 @@ public class CnpjValidator<T, TElement> : PropertyValidator<T, TElement>
 
     public override bool IsValid(ValidationContext<T> context, TElement value)
     {
-        return string.IsNullOrWhiteSpace(value!.ToString()) || ValidateCnpj(value.ToString()!);
+        var strValue = value?.ToString();
+        return string.IsNullOrWhiteSpace(strValue) || ValidateCnpj(strValue!);
     }
 
     // Private Methods
