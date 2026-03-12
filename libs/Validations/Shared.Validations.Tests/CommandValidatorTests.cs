@@ -1,4 +1,6 @@
 using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Shared.Validations.Extensions;
 
 namespace Shared.Validations.Tests;
 
@@ -134,5 +136,120 @@ public class CommandValidatorTests
                 .WithMessage("Name must be at least 2 characters");
             RuleFor(x => x.Age).GreaterThan(0).WithMessage("Age must be greater than 0");
         }
+    }
+}
+
+public class ValidatorExtensionsTests
+{
+    private class TestModel
+    {
+        public string? Cpf { get; set; }
+        public string? Cnpj { get; set; }
+    }
+
+    private class TestModelValidator : AbstractValidator<TestModel>
+    {
+        public TestModelValidator()
+        {
+            RuleFor(x => x.Cpf).Cpf();
+            RuleFor(x => x.Cnpj).Cnpj();
+        }
+    }
+
+    [Fact]
+    public void Cpf_ValidCpf_PassesValidation()
+    {
+        // Arrange
+        var validator = new TestModelValidator();
+        var model = new TestModel { Cpf = "529.982.247-25", Cnpj = null };
+
+        // Act
+        var result = validator.Validate(model);
+
+        // Assert
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void Cpf_InvalidCpf_FailsValidation()
+    {
+        // Arrange
+        var validator = new TestModelValidator();
+        var model = new TestModel { Cpf = "111.111.111-12", Cnpj = null };
+
+        // Act
+        var result = validator.Validate(model);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == "Cpf");
+    }
+
+    [Fact]
+    public void Cnpj_ValidCnpj_PassesValidation()
+    {
+        // Arrange
+        var validator = new TestModelValidator();
+        var model = new TestModel { Cpf = null, Cnpj = "11.222.333/0001-81" };
+
+        // Act
+        var result = validator.Validate(model);
+
+        // Assert
+        Assert.True(result.IsValid);
+    }
+
+    [Fact]
+    public void Cnpj_InvalidCnpj_FailsValidation()
+    {
+        // Arrange
+        var validator = new TestModelValidator();
+        var model = new TestModel { Cpf = null, Cnpj = "11.111.111/1111-11" };
+
+        // Act
+        var result = validator.Validate(model);
+
+        // Assert
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Errors, e => e.PropertyName == "Cnpj");
+    }
+}
+
+public class ValidationExtensionsTests
+{
+    private class SampleCommand { }
+
+    [Fact]
+    public void AddValidations_RegistersICommandValidatorAsTransient()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddValidations();
+
+        // Assert
+        var descriptor = Assert.Single(
+            services,
+            sd => sd.ServiceType == typeof(ICommandValidator<>)
+        );
+        Assert.Equal(ServiceLifetime.Transient, descriptor.Lifetime);
+        Assert.Equal(typeof(CommandValidator<>), descriptor.ImplementationType);
+    }
+
+    [Fact]
+    public void AddValidations_CanResolveICommandValidatorWithConcreteType()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddTransient<IValidator<SampleCommand>, InlineValidator<SampleCommand>>();
+        services.AddValidations();
+        var provider = services.BuildServiceProvider();
+
+        // Act
+        var validator = provider.GetService<ICommandValidator<SampleCommand>>();
+
+        // Assert
+        Assert.NotNull(validator);
     }
 }
