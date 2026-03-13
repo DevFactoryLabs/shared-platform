@@ -213,7 +213,7 @@ public class HandlerTests
         var handler = new TestGenericHandler();
 
         // Assert
-        Assert.IsAssignableFrom<Handler<string>>(handler);
+        Assert.IsType<Handler<string>>(handler, exactMatch: false);
     }
 
     [Fact]
@@ -223,6 +223,6 @@ public class HandlerTests
         var handler = new TestHandler();
 
         // Assert
-        Assert.IsAssignableFrom<Handler>(handler);
+        Assert.IsType<Handler>(handler, exactMatch: false);
     }
 }

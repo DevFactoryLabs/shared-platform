@@ -28,7 +28,7 @@ public class NotFoundResultTests
         var result = new NotFoundResult(error);
 
         // Assert
-        Assert.IsAssignableFrom<Result>(result);
+        Assert.IsType<Result>(result, exactMatch: false);
     }
 
     [Fact]
@@ -122,7 +122,7 @@ public class GenericNotFoundResultTests
         var result = new NotFoundResult<string>(error);
 
         // Assert
-        Assert.IsAssignableFrom<Result<string>>(result);
+        Assert.IsType<Result<string>>(result, exactMatch: false);
     }
 
     [Fact]

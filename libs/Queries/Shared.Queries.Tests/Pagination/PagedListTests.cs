@@ -133,7 +133,7 @@ public class PagedListTests
         var pagedList = new PagedList<string>(items, count, pageNumber, pageSize);
 
         // Assert
-        Assert.IsAssignableFrom<IPagedList<string>>(pagedList);
+        Assert.IsType<IPagedList<string>>(pagedList, exactMatch: false);
     }
 
     [Fact]

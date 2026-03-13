@@ -17,7 +17,7 @@ public class IntegrationEventTests
         var integrationEvent = new TestIntegrationEvent { Name = "Test", Value = 123 };
 
         // Assert
-        Assert.IsAssignableFrom<IIntegrationEvent>(integrationEvent);
+        Assert.IsType<IIntegrationEvent>(integrationEvent, exactMatch: false);
     }
 
     [Fact]
@@ -27,7 +27,7 @@ public class IntegrationEventTests
         var integrationEvent = new TestIntegrationEvent { Name = "Test", Value = 123 };
 
         // Assert
-        Assert.IsAssignableFrom<IEventBase>(integrationEvent);
+        Assert.IsType<IEventBase>(integrationEvent, exactMatch: false);
     }
 
     [Fact]

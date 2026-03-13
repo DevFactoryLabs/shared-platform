@@ -203,6 +203,6 @@ public class BaseQueryTests
         var query = new TestQuery(1, 5, "test");
 
         // Assert
-        Assert.IsAssignableFrom<BaseQuery>(query);
+        Assert.IsType<BaseQuery>(query, exactMatch: false);
     }
 }

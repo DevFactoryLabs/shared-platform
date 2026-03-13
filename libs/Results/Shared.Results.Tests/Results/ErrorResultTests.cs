@@ -47,7 +47,7 @@ public class ErrorResultTests
         var result = new ErrorResult(error);
 
         // Assert
-        Assert.IsAssignableFrom<Result>(result);
+        Assert.IsType<Result>(result, exactMatch: false);
     }
 }
 
@@ -100,7 +100,7 @@ public class GenericErrorResultTests
         var result = new ErrorResult<string>(error);
 
         // Assert
-        Assert.IsAssignableFrom<Result<string>>(result);
+        Assert.IsType<Result<string>>(result, exactMatch: false);
     }
 
     [Fact]

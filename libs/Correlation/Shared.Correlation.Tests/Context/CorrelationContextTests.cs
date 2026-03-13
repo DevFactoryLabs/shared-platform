@@ -101,7 +101,7 @@ public class CorrelationContextTests
         var context = new CorrelationContext();
 
         // Assert
-        Assert.IsAssignableFrom<ICorrelationContext>(context);
+        Assert.IsType<ICorrelationContext>(context, exactMatch: false);
     }
 
     [Fact]
