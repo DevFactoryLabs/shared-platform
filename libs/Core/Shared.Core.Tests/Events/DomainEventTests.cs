@@ -87,7 +87,7 @@ public class DomainEventTests
         var domainEvent = new TestDomainEvent();
 
         // Assert
-        Assert.IsAssignableFrom<IDomainEvent>(domainEvent);
+        Assert.IsType<IDomainEvent>(domainEvent, exactMatch: false);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class DomainEventTests
         var domainEvent = new TestDomainEvent();
 
         // Assert
-        Assert.IsAssignableFrom<IEventBase>(domainEvent);
+        Assert.IsType<IEventBase>(domainEvent, exactMatch: false);
     }
 
     [Fact]

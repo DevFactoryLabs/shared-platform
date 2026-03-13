@@ -191,7 +191,7 @@ public class InboxMessageTests
 
         // Assert
         Assert.NotNull(content);
-        Assert.IsAssignableFrom<IIntegrationEvent>(content);
+        Assert.IsType<IIntegrationEvent>(content, exactMatch: false);
         Assert.IsType<TestIntegrationEvent>(content);
 
         var typedContent = (TestIntegrationEvent)content;

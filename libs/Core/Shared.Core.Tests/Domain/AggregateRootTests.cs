@@ -91,7 +91,7 @@ public class AggregateRootTests
         var events = aggregate.DomainEvents;
 
         // Assert
-        Assert.IsAssignableFrom<IReadOnlyCollection<IDomainEvent>>(events);
+        Assert.IsType<IReadOnlyCollection<IDomainEvent>>(events, exactMatch: false);
     }
 
     [Fact]
